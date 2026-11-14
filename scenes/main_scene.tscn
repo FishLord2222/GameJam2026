@@ -1,0 +1,21 @@
+[gd_scene load_steps=4]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/water_simulator.gd" id="2_water"]
+[ext_resource type="Script" path="res://scripts/water_visuals.gd" id="3_visuals"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Background" type="ColorRect"]
+offset_left = -640.0
+offset_top = -360.0
+offset_right = 640.0
+offset_bottom = 360.0
+color = Color(0.05, 0.1, 0.2, 1)
+
+[node name="WaterSimulator" type="Node2D"]
+script = ExtResource("2_water")
+
+[node name="WaterVisuals" type="Node2D"]
+script = ExtResource("3_visuals")

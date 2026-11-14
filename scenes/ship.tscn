@@ -1,0 +1,14 @@
+[gd_scene load_steps=2]
+
+[ext_resource type="Script" path="res://scripts/ship_controller.gd" id="1_ship"]
+
+[node name="Ship" type="CharacterBody2D"]
+script = ExtResource("1_ship")
+
+[node name="ShipBody" type="Sprite2D" parent="."]
+position = Vector2(0, -5)
+scale = Vector2(2, 2)
+h_flip = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)

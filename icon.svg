@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- Simple ship icon -->
+  <polygon points="2,12 14,12 12,8 4,8" fill="#4488cc" stroke="#225588" stroke-width="1"/>
+  <polygon points="4,8 12,8 8,4" fill="#66aaee" stroke="#225588" stroke-width="1"/>
+  <rect x="7" y="2" width="2" height="4" fill="#dddddd" stroke="#888888" stroke-width="0.5"/>
+  <!-- Water waves -->
+  <path d="M0,13 Q2,12 4,13 Q6,14 8,13 Q10,12 12,13 Q14,14 16,13" fill="none" stroke="#336699" stroke-width="1"/>
+</svg>

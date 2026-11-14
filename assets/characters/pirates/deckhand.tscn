@@ -1,6 +1,8 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/pirates/deckhand.png" id="1_texture"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/pirates/deckhand-swim.png" id="2_swim"]
 
 [sub_resource type="AtlasTexture" id="Atlas_0"]
 atlas = ExtResource("1_texture")
@@ -34,6 +36,22 @@ region = Rect2(887, 443, 443, 444)
 atlas = ExtResource("1_texture")
 region = Rect2(1330, 443, 444, 444)
 
+[sub_resource type="AtlasTexture" id="Swim_0"]
+atlas = ExtResource("2_swim")
+region = Rect2(0, 0, 543, 724)
+
+[sub_resource type="AtlasTexture" id="Swim_1"]
+atlas = ExtResource("2_swim")
+region = Rect2(543, 0, 543, 724)
+
+[sub_resource type="AtlasTexture" id="Swim_2"]
+atlas = ExtResource("2_swim")
+region = Rect2(1086, 0, 543, 724)
+
+[sub_resource type="AtlasTexture" id="Swim_3"]
+atlas = ExtResource("2_swim")
+region = Rect2(1629, 0, 543, 724)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_pirate"]
 animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("Atlas_0")}, {"duration": 1.0, "texture": SubResource("Atlas_1")}, {"duration": 1.0, "texture": SubResource("Atlas_2")}, {"duration": 1.0, "texture": SubResource("Atlas_3")}],
@@ -45,6 +63,11 @@ animations = [{
 "loop": true,
 "name": &"walk",
 "speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Swim_0")}, {"duration": 1.0, "texture": SubResource("Swim_1")}, {"duration": 1.0, "texture": SubResource("Swim_2")}, {"duration": 1.0, "texture": SubResource("Swim_3")}],
+"loop": true,
+"name": &"swim",
+"speed": 6.0
 }]
 
 [node name="Pirate" type="AnimatedSprite2D"]

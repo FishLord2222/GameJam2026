@@ -47,7 +47,7 @@ signal ship_exited_water
 @export var rotation_speed: float = 1.5
 
 ## Buoyancy force multiplier. Higher = bouncier float.
-@export var buoyancy_strength: float = 12.0
+@export var buoyancy_strength: float = 300.0
 
 ## The Y offset from the ship's origin to its waterline.
 ## Everything below this offset gets buoyant force when in water.
@@ -256,3 +256,4 @@ func reset_position(new_position: Vector2) -> void:
 	position = new_position
 	velocity = Vector2.ZERO
 	rotation = 0.0
+

@@ -1,14 +1,29 @@
-[gd_scene load_steps=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ship_controller.gd" id="1_ship"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ship"]
+size = Vector2(100, 25)
 
 [node name="Ship" type="CharacterBody2D"]
 script = ExtResource("1_ship")
 
-[node name="ShipBody" type="Sprite2D" parent="."]
-position = Vector2(0, -5)
-scale = Vector2(2, 2)
-flip_h = true
+[node name="Mast" type="Polygon2D" parent="."]
+color = Color(0.31, 0.20, 0.14, 1)
+polygon = PackedVector2Array(-3, 0, -3, -90, 3, -90, 3, 0)
+
+[node name="Sail" type="Polygon2D" parent="."]
+color = Color(0.94, 0.88, 0.71, 1)
+polygon = PackedVector2Array(5, -84, 5, -18, 47, -28, 38, -70)
+
+[node name="Hull" type="Polygon2D" parent="."]
+color = Color(0.39, 0.22, 0.14, 1)
+polygon = PackedVector2Array(-65, -4, 65, -4, 43, 30, -42, 30)
+
+[node name="Deck" type="Polygon2D" parent="."]
+color = Color(0.70, 0.46, 0.27, 1)
+polygon = PackedVector2Array(-65, -8, 65, -8, 65, 0, -65, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -5)
+position = Vector2(0, 10)
+shape = SubResource("RectangleShape2D_ship")

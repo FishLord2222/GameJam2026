@@ -1,31 +1,16 @@
 ## Main
 ## Entry point for the game. Sets up the water simulation,
 ## spawns the ship, and handles game state.
-##
-## ## Scene Structure
-## Main (Node2D)
-## ├── Background (ColorRect)
-## ├── WaterSimulator (Node2D) — physics simulation
-## ├── WaterVisuals (Node2D) — rendering
-## └── Ship (CharacterBody2D) — player-controlled ship
-##
-## ## Collaboration Guide
-## This script manages scene setup. Physics lives in:
-## - scripts/water_simulator.gd   — wave simulation
-## - scripts/ship_controller.gd   — buoyancy + input
-## - scripts/water_visuals.gd     — water rendering
-##
-## To add new features, prefer new script files rather than
-## modifying core physics scripts.
 
 extends Node2D
 
-@onready var water_simulator: WaterSimulator = $WaterSimulator
+# Use Node2D to avoid headless load-order issues with class_name
+@onready var water_simulator: Node2D = $WaterSimulator
 @onready var water_visuals: Node2D = $WaterVisuals
 
 # Ship configuration
 var ship_scene: PackedScene
-var ship: ShipController
+var ship: Node2D
 var ship_spawn_position: Vector2 = Vector2(0, 50)  # Start above water
 
 
@@ -46,7 +31,7 @@ func _setup_water() -> void:
 func _spawn_ship() -> void:
 	# Load and instantiate the ship scene
 	ship_scene = load("res://scenes/ship.tscn")
-	ship = ship_scene.instantiate() as ShipController
+	ship = ship_scene.instantiate()
 	
 	# Link ship to water simulator
 	ship.water_simulator = water_simulator
@@ -58,8 +43,8 @@ func _spawn_ship() -> void:
 
 func _connect_signals() -> void:
 	if ship:
-		ship.ship_entered_water.connect(_on_ship_entered_water)
-		ship.ship_exited_water.connect(_on_ship_exited_water)
+		ship.connect("ship_entered_water",Callable(self,"_on_ship_entered_water"))
+		ship.connect("ship_exited_water",Callable(self,"_on_ship_exited_water"))
 
 
 func _on_ship_entered_water() -> void:

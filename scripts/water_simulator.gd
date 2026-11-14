@@ -114,27 +114,28 @@ func _process(delta: float) -> void:
 
 
 ## Main simulation step: propagate waves between neighbors.
+## Uses a temporary array to prevent instantaneous infinite propagation.
 func _propagate_waves() -> void:
-	var left_deltas = PackedFloat32Array()
-	var right_deltas = PackedFloat32Array()
-	left_deltas.resize(resolution)
-	right_deltas.resize(resolution)
+	var velocity_deltas: PackedFloat32Array = PackedFloat32Array()
+	velocity_deltas.resize(resolution)
 
 	# Left-to-right pass
 	for i in range(1, resolution):
 		var delta = -velocities[i - 1] * wave_propagation
-		velocities[i] += delta
-		left_deltas[i] = delta
+		velocity_deltas[i] += delta
 
 	# Right-to-left pass
 	for i in range(resolution - 2, -1, -1):
 		var delta = -velocities[i + 1] * wave_propagation
-		velocities[i] += delta
-		right_deltas[i] = delta
+		velocity_deltas[i] += delta
+
+	# Apply accumulated deltas
+	for i in range(resolution):
+		velocities[i] += velocity_deltas[i]
 
 
 ## Apply spring force (pull back to rest) and damping (lose energy).
-func _apply_springs_and_damping() -> var max_impact:
+func _apply_springs_and_damping() -> float:
 	var max_impact: float = 0.0
 
 	for i in range(resolution):
@@ -169,17 +170,17 @@ func _apply_ambient_waves(delta: float) -> void:
 ## Get the world Y position of the water surface at a given world X coordinate.
 func get_water_height_at(world_x: float) -> float:
 	var index = _world_x_to_index(world_x)
-	if index < 0 or index >= resolution:
+	if index < 0.0 or index >= float(resolution):
 		return water_y  # Outside sim bounds → flat water
 
 	# Interpolate between two neighboring points for smoothness
-	var left = clampi(index, 0, resolution - 1)
-	var right = clampi(index + 1, 0, resolution - 1)
-	var frac = fmodf(float(index), 1.0)
+	var left_idx = int(clampf(index, 0.0, float(resolution) - 1.0))
+	var right_idx = int(clampf(index + 1.0, 0.0, float(resolution) - 1.0))
+	var frac = index - floor(index)
 
-	var h_left = heights[left]
-	var h_right = heights[right]
-	var interpolated = lerf(h_left, h_right, frac)
+	var h_left = heights[left_idx]
+	var h_right = heights[right_idx]
+	var interpolated = lerp(h_left, h_right, frac)
 
 	return water_y + interpolated
 
@@ -198,14 +199,14 @@ func get_water_angle_at(world_x: float) -> float:
 ## `radius` = spread of the disturbance
 func set_wave_at(world_x: float, height: float, radius: float = 50.0) -> void:
 	var center_idx = _world_x_to_index(world_x)
-	var radius_idx = int(radius / (_get_point_spacing()))
+	var radius_idx = int(radius / _get_point_spacing())
 
 	for i in range(resolution):
-		var dist = absi(i - center_idx)
-		if dist <= radius_idx:
-			# Gaussian-ish falloff
-			var influence = 1.0 - float(dist) / float(radius_idx)
-			influence = influence * influence  # Quadratic falloff
+		var dist = absf(float(i) - center_idx)
+		if dist <= float(radius_idx):
+			# Quadratic falloff
+			var influence = 1.0 - dist / float(radius_idx)
+			influence = influence * influence
 			velocities[i] += height * influence
 
 

@@ -23,14 +23,13 @@ extends CharacterBody2D
 
 signal ship_entered_water
 signal ship_exited_water
-signal ship_exploded
 
 # ─────────────────────────────────────────────
 # EXPOSED PARAMETERS
 # ─────────────────────────────────────────────
 
 ## Reference to the WaterSimulator node in the scene.
-@export var water_simulator: WaterSimulator
+@export var water_simulator: Node2D
 
 ## Ship mass (affects buoyancy response).
 @export var mass: float = 5.0
@@ -65,9 +64,7 @@ signal ship_exploded
 # ─────────────────────────────────────────────
 
 var _in_water: bool = false
-var _current_speed: float = 0.0
 var _gravity: float = 600.0  # Downward gravity
-var _buoyancy_vector: Vector2 = Vector2.ZERO
 var _splash_timer: float = 0.0
 
 
@@ -83,12 +80,12 @@ func _ready() -> void:
 			printerr("[ShipController] No WaterSimulator found! Assign one in the inspector.")
 
 
-func _find_water_simulator() -> WaterSimulator:
+func _find_water_simulator() -> Node2D:
 	# Search parent tree for a WaterSimulator
 	var parent = get_parent()
 	while parent:
 		for child in parent.get_children():
-			if child is WaterSimulator:
+			if child.has_method("set_wave_at"):
 				return child
 		parent = parent.get_parent()
 	return null
@@ -112,7 +109,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	# 5. Create waves when moving through water
-	if _in_water and speed > 30.0:
+	if _in_water and velocity.length() > 30.0:
 		_create_ship_wakes(delta)
 
 
@@ -122,8 +119,8 @@ func _physics_process(delta: float) -> void:
 
 func _handle_input(delta: float) -> void:
 	# Rotation
-	var rotate_left = Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_left")
-	var rotate_right = Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_right")
+	var rotate_left = Input.is_action_pressed("ui_left")
+	var rotate_right = Input.is_action_pressed("ui_right")
 
 	if rotate_left:
 		rotation -= rotation_speed * delta
@@ -230,7 +227,7 @@ func _create_ship_wakes(delta: float) -> void:
 		return
 
 	# Create a wave disturbance at the ship's position
-	var wake_strength = speed * 0.02
+	var wake_strength = velocity.length() * 0.02
 	water_simulator.set_wave_at(position.x, wake_strength, 40.0)
 
 	# If moving sideways, create wake at bow and stern

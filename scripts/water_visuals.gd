@@ -11,7 +11,7 @@
 extends Node2D
 
 # Reference to the water simulation
-@export var water_simulator: WaterSimulator
+@export var water_simulator: Node2D
 
 # Water visual parameters
 @export var water_color_deep: Color = Color(0.02, 0.08, 0.25)
@@ -24,7 +24,6 @@ extends Node2D
 @export var wave_segments: int = 200
 
 var _time: float = 0.0
-var _water_rect: Rect2
 
 
 func _ready() -> void:
@@ -45,6 +44,7 @@ func _draw() -> void:
 	var water_y_base = water_simulator.water_y
 	var resolution = water_simulator.resolution
 	var heights = water_simulator.heights
+	var velocities = water_simulator.velocities
 	var point_spacing = sim_width / float(resolution)
 	var start_x = -sim_width / 2.0
 
@@ -66,8 +66,8 @@ func _draw() -> void:
 	water_poly.append(Vector2(start_x, bottom_y))
 	colors.append(water_color_deep)
 
-	# Draw filled water body
-	draw_colored_polygon(water_poly, colors)
+	# Draw filled water body with per-vertex colors
+	draw_polygon(water_poly, colors)
 
 	# ── Draw animated foam line on surface ──
 	for i in range(resolution - 1):
@@ -77,7 +77,7 @@ func _draw() -> void:
 		var y2 = water_y_base + heights[i + 1]
 
 		# Add visual sparkle based on wave velocity
-		var velocity = water_simulator.velocities[i] if i < water_simulator.velocities.size() else 0.0
+		var velocity = velocities[i] if i < velocities.size() else 0.0
 		var foam_amount = clampf(absf(velocity) * 0.05, 0.0, 1.0)
 
 		if foam_amount > 0.1:
@@ -110,11 +110,11 @@ func _draw() -> void:
 		draw_circle(Vector2(cx + cx_offset, cy), size, caustic_color)
 
 
-func _find_water_simulator() -> WaterSimulator:
+func _find_water_simulator() -> Node2D:
 	var parent = get_parent()
 	while parent:
 		for child in parent.get_children():
-			if child is WaterSimulator:
+			if child.has_method("set_wave_at"):
 				return child
 		parent = parent.get_parent()
 	return null

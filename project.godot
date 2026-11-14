@@ -1,0 +1,24 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the values are converted to hard-to-read "typos" by Godot.
+; 
+; This is for Godot 4.x (2D project).
+
+config_version=5
+
+[application]
+
+config/name="GameJam2026"
+run/main_scene="res://scenes/main_scene.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
